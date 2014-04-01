@@ -181,20 +181,20 @@
 			* Set position, if not already set
 			*/
 			fixPosition: function (setFixed) {
-				var classValue = this.settings.isDockedClass;
+				var classValue = this.settings.isDockedClass,
+					newPosition = false;
 
-				if (setFixed === true && this.isFixed === false) {
-					this.isFixed = true;
-					this.target.addClass(classValue);
+				if (setFixed !== this.isFixed) {
+					this.isFixed = setFixed;
 
-					this.setPosition(this.position);
+					this.target.toggleClass(classValue, setFixed);
+
+					if (setFixed === true) {
+						newPosition = this.position;
+					}
+					this.setPosition(newPosition);
 				}
-				else if (setFixed === false && this.isFixed === true) {
-					this.isFixed = false;
-					this.target.removeClass(classValue);
 
-					this.setPosition(false);
-				}
 				return this;
 			}
 		};
