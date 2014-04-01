@@ -50,7 +50,7 @@ header {
 	text-align: center;
 	z-index: 1;
 }
-nav.is-visible,
+nav.is-fixed,
 .dockedClone {
 	/* positioning */
 	display: block;

@@ -15,6 +15,7 @@
 				useClone: false,
 				cloneClass: 'dockedClone',
 				isDockedClass: 'is-visible',
+				isFixedClass: 'is-fixed',
 				appendTarget: 'body',
 				pixelsGrace: 0,
 				usePixelsGrace: false
@@ -101,7 +102,7 @@
 			elementClone : null,
 			top : null,
 			bottom : null,
-			isFixed : false,
+			isDocked : false,
 			position : {},
 
 			createClone: function ($element) {
@@ -180,16 +181,24 @@
 			/**
 			* Set position, if not already set
 			*/
-			fixPosition: function (setFixed) {
-				var classValue = this.settings.isDockedClass,
+			fixPosition: function (setDocked) {
+				var settings = this.settings,
+					instanceTarget,
 					newPosition = false;
 
-				if (setFixed !== this.isFixed) {
-					this.isFixed = setFixed;
+				if (setDocked !== this.isDocked) {
+					this.isDocked = setDocked;
 
-					this.target.toggleClass(classValue, setFixed);
+					instanceTarget = this.target;
 
-					if (setFixed === true) {
+					instanceTarget.toggleClass(settings.isFixedClass, setDocked);
+
+					window.setTimeout(function () {
+						instanceTarget.toggleClass(settings.isDockedClass, setDocked);
+					}, 0);
+					
+
+					if (setDocked === true) {
 						newPosition = this.position;
 					}
 					this.setPosition(newPosition);
