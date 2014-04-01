@@ -12,11 +12,12 @@
 
 		var defaults = {
 				itemSelector: '.docking-nav',
+				useClone: false,
 				cloneClass: 'dockedClone',
-				cloneVisibleClass: 'is-visible',
+				isDockedClass: 'is-visible',
 				appendTarget: 'body',
 				pixelsGrace: 0,
-				usePixelsGrace : false
+				usePixelsGrace: false
 			},
 			eventHandlersBound = false,
 			scrollCallbackArray = [],
@@ -75,8 +76,11 @@
 
 			this.settings = $.extend({}, defaults, options);
 			this.element = $(element);
+			this.target = this.element;
 
-			this.createClone(this.element);
+			if (this.settings.useClone) {
+				this.target = this.createClone(this.element);
+			}
 
 			this.updatePixelsGrace().updatePosition();
 
@@ -98,6 +102,7 @@
 			top : null,
 			bottom : null,
 			isFixed : false,
+			position : {},
 
 			createClone: function ($element) {
 				var clone = $element.clone();
@@ -106,9 +111,7 @@
 					.addClass(this.settings.cloneClass)
 					.appendTo(this.settings.appendTarget);
 
-				this.elementClone = clone;
-
-				return this;
+				return clone;
 			},
 
 			/**
@@ -130,19 +133,35 @@
 			* Update the values used for position calculations
 			*/
 			updatePosition: function () {
-				var offset = this.element.offset();
+				var offset = this.element.offset(),
+					outerHeight = this.element.outerHeight();
 
 				this.top = offset.top;
-				this.bottom = offset.top + this.element.outerHeight() + this.settings.pixelsGrace;
+				this.bottom = offset.top + outerHeight + this.settings.pixelsGrace;
+
+				if (this.settings.useClone === false) {
+					this.element.parent().css('min-height', outerHeight);
+				}
 
 				//update clone position
-				this.elementClone.css({
+				this.position = {
 					'left' : offset.left,
 					'right' : 'auto',
 					'width': this.element.outerWidth()
-				});
+				};
 
 				return this;
+			},
+
+			setPosition: function (positionParam) {
+				var reset = {
+						'left' : '',
+						'right' : '',
+						'width': ''
+					},
+					position = positionParam || reset;
+
+				this.target.css(position);
 			},
 
 			/**
@@ -162,15 +181,19 @@
 			* Set position, if not already set
 			*/
 			fixPosition: function (setFixed) {
-				var classValue = this.settings.cloneVisibleClass;
+				var classValue = this.settings.isDockedClass;
 
 				if (setFixed === true && this.isFixed === false) {
 					this.isFixed = true;
-					this.elementClone.addClass(classValue);
+					this.target.addClass(classValue);
+
+					this.setPosition(this.position);
 				}
 				else if (setFixed === false && this.isFixed === true) {
 					this.isFixed = false;
-					this.elementClone.removeClass(classValue);
+					this.target.removeClass(classValue);
+
+					this.setPosition(false);
 				}
 				return this;
 			}

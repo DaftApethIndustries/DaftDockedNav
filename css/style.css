@@ -22,6 +22,7 @@ header {
 
 nav { 
 	margin:0 auto;
+	padding: 20px;
 	width:960px;
 }
 ul {
@@ -43,13 +44,13 @@ header {
 	color: #9c9c9c;
 	font-size: 20px;
 	text-align: right;
-	
-	padding: 20px;
+
 	position: relative;
 	overflow: hidden;
 	text-align: center;
 	z-index: 1;
 }
+nav.is-visible,
 .dockedClone {
 	/* positioning */
 	display: block;
@@ -71,6 +72,8 @@ header {
 	padding: 20px;
 	text-align: right;
 }
+
+nav.is-visible,
 .dockedClone.is-visible {
 	top: 0;
 }
